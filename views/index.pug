@@ -1,0 +1,22 @@
+html
+    head
+    body
+        div
+            h1 Add a New User
+        form(id="myForm", method='POST', action='/createNewUser')
+            div
+                label(for='username') Username
+                input(id='username', name='username')
+            div
+                label(for='name') Name
+                input(id='name', name='name')
+            div
+                label(for='email') Email
+                input(id='email', name='email')
+            div
+                label(for='age') Age
+                input(id='age', name='age', type='number')
+            div
+                input(type='submit', value='Add User')
+            div
+                a(href="/user") See all the Users

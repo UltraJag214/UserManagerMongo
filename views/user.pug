@@ -1,0 +1,24 @@
+html
+    head
+        title User Listing
+    body
+        h1 List of Users
+        table(style='width:50%', border='1')
+            tr
+                th Username
+                th Name
+                th Email
+                th Age
+            each newuser in whatever
+                tr
+                    td= newuser.username
+                    td= newuser.name 
+                    td= newuser.email
+                    td= newuser.age 
+                    td
+                        a(href=`/edit/${newuser.id}`) Edit
+                    td
+                        a(href=`/deleteUser/${newuser.id}`) Delete
+        div
+            a(href="/") Add a New User
+                

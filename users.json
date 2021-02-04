@@ -1,0 +1,18 @@
+{
+    "fullUserList": [
+        {
+            "name": "Hayden Gibbonss",
+            "username": "hgibbons24",
+            "email": "hayden.c.gibbons@gmail.com",
+            "age": "18",
+            "id": 854
+        },
+        {
+            "name": "Chris Gibbons",
+            "username": "cgibbons24",
+            "email": "chris.gibbons@gmail.com",
+            "age": "50",
+            "id": 123
+        }
+    ]
+}

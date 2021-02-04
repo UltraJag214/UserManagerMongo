@@ -1,0 +1,20 @@
+html
+    head
+    body
+        form(id="editForm", method='POST', action=`/edit/${myObj.id}`)
+            div
+                label(for='username') Username
+                input(id='username', name='username', value=myObj.username)
+            div
+                label(for='name') Name
+                input(id='name', name='name', value=myObj.name)
+            div
+                label(for='email') Email
+                input(id='email', name='email', value=myObj.email)
+            div
+                label(for='age') Age
+                input(id='age', name='age', type='number', value=myObj.age)
+            div
+                input(type='submit', value='Edit User')
+            div
+                a(href="/user") See all the Users
