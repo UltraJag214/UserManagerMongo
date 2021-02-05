@@ -5,20 +5,30 @@ html
         h1 List of Users
         table(style='width:50%', border='1')
             tr
-                th Username
-                th Name
+                th first Name
+                th last Name
                 th Email
                 th Age
+                th Edit
+                th Delete
+                th ID
             each newuser in whatever
                 tr
-                    td= newuser.username
-                    td= newuser.name 
+                    td= newuser.firstName
+                    td= newuser.lastName 
                     td= newuser.email
                     td= newuser.age 
                     td
                         a(href=`/edit/${newuser.id}`) Edit
                     td
                         a(href=`/deleteUser/${newuser.id}`) Delete
+                    td= newuser.id
+        div
+            a(href=`/asc/`) Sort Ascending
+        div
+            a(href=`/dsc/`) Sort Descending
         div
             a(href="/") Add a New User
+        div
+            a(href="/search") Search for a user
                 

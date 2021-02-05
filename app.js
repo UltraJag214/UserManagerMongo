@@ -1,74 +1,123 @@
-const express = require('express')
-const fs = require('fs')
-const path = require('path')
-const json = require('./users.json')
- 
-let app = express()
+const express = require('express');
+const app = express()
+const port = 3000;
+// const fs = require('fs');
+// const path = require('path');
+// const json = require('./users.json');
+const mongoose = require('mongoose');
 
-app.use(express.urlencoded({extended: false}))
+const dbConnectionString = "mongodb://localhost/UserManager";
+mongoose.connect(dbConnectionString, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+const db = mongoose.connection;
+
+const userSchema = new mongoose.Schema({
+    firstName: String,
+    lastName: String,
+    email: String,
+    age: { type: Number, min: 18, max: 70 },
+    createdDate: { type: Date, default: Date.now },
+});
+
+const User = mongoose.model("User", userSchema);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
 
 app.set('views', './views')
 app.set('view engine', 'pug')
 
 app.get('/', (req, res) => {
-    res.render('index')
-})
+    res.render('index');
+});
 
-app.post('/createNewUser', async(req,res) => {
-    let newUser
-    newUser = {
-        name: req.body.name,
-        username: req.body.username,
+app.post('/createNewUser', async (req, res) => {
+    var newUser = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         age: req.body.age,
-        id: Math.floor(Math.random() * 1000)
-    }
-    json.fullUserList.push(newUser)
-    fs.writeFile('users.json', JSON.stringify(json), (err) => {
-        if(err) throw err
-        console.log('success');
-    })
+    });
+    newUser.save().then(() => console.log("Success"));
     res.redirect('/user')
-})
+});
 
 app.get('/user', (req, res) => {
-    res.render('user', {whatever: json.fullUserList})
-})
+    User
+        .find({}, function (err, something) {
+            res.render('user', { whatever: something });
+        });
+});
 
-app.get('/edit/:namedit', (req,res) => {
-    let myArr = json.fullUserList.filter(u => {if(req.params.namedit == u.id) return u})
-    console.log(myArr);
-    res.render('edit', {myObj: myArr[0]})
-})
+app.get('/asc', (req, res) => {
+    User.find({}).sort('firstName').exec(function (err, docs) {
+        res.render('user', { whatever: docs });
+    });
+});
 
-app.post('/edit/:userID', (req,res) => {
-    let i
-    let myArr = json.fullUserList.filter((u,index)=> {if(req.params.userID == u.id) { i = index; return u }})
-    let userToSave = myArr[0]
-    userToSave.name = req.body.name
-    userToSave.username = req.body.username
-    userToSave.email = req.body.email
-    userToSave.age = req.body.age
-    json.fullUserList[i] = userToSave
-    fs.writeFile('users.json', JSON.stringify(json), (err) => {
-        if(err) throw err
-        console.log('success');
-    })
-    res.redirect('/user')
-})
+app.get('/dsc', (req, res) => {
+    User.find({}).sort('-firstName').exec(function (err, docs) {
+        res.render('user', { whatever: docs });
+    });
+});
 
-app.get('/deleteUser/:userID', (req,res) => {
-    json.fullUserList.filter((theThing,index) => {
-        if(theThing.id == req.params.userID) {
-            json.fullUserList.splice(index, 1)
-    }})
-    fs.writeFile('users.json', JSON.stringify(json), (err) => {
-        if(err) throw err
-        console.log('success');
-    })
-    res.redirect('/user')
-})
+app.get('/edit/:namedit', (req, res) => {
+    User
+        .find({ _id: req.params.namedit }, function (err, something) {
+            res.render('edit', { myObj: something[0] });
+        });
+});
+
+app.post('/edit/:userID', (req, res) => {
+    User.updateOne({ _id: req.params.userID }, {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        age: req.body.age
+    }, function (err, res) {
+        console.log('Success');
+    });
+    res.redirect('/user');
+});
+
+app.get('/deleteUser/:userID', (req, res) => {
+    User.deleteOne({ _id: req.params.userID }, function (err, res) {
+        console.log('Success');
+    });
+    res.redirect('/user');
+});
+
+app.get('/search', (req, res) => {
+    res.render('search');
+});
+
+// app.post('/searchPage', (req, res) => {
+//     User
+//         .find({ firstName: req.params.firstName, lastName: req.params.lastName }, function (err, something) {
+//             res.render('user', { whatever: something });
+//         });
+// })
+
+app.post('/searchPage', (req, res) => {
+
+    if (req.body.firstName && !req.body.lastName) {
+        User
+            .find({ firstName: req.body.firstName }, function (err, something) {
+                res.render('user', { whatever: something });
+            });
+    } else if (req.body.lastName && !req.body.firstName) {
+        User
+            .find({ lastName: req.body.lastName }, function (err, something) {
+                res.render('user', { whatever: something });
+            });
+    } else {
+        User
+            .find({ firstName: req.body.firstName, lastName: req.body.lastName }, function (err, something) {
+                res.render('user', { whatever: something });
+            });
+    }
+});
 
 app.listen(3000, () => {
     console.log('listening on port 3000');
-})
+});

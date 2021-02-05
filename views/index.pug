@@ -5,11 +5,11 @@ html
             h1 Add a New User
         form(id="myForm", method='POST', action='/createNewUser')
             div
-                label(for='username') Username
-                input(id='username', name='username')
+                label(for='firstName') first Name
+                input(id='firstName', name='firstName')
             div
-                label(for='name') Name
-                input(id='name', name='name')
+                label(for='lastName') last Name
+                input(id='lastName', name='lastName')
             div
                 label(for='email') Email
                 input(id='email', name='email')
@@ -20,3 +20,5 @@ html
                 input(type='submit', value='Add User')
             div
                 a(href="/user") See all the Users
+            div
+                a(href="/search") Search for a user
