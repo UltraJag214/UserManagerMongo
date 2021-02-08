@@ -1,9 +1,6 @@
 const express = require('express');
 const app = express()
 const port = 3000;
-// const fs = require('fs');
-// const path = require('path');
-// const json = require('./users.json');
 const mongoose = require('mongoose');
 
 const dbConnectionString = "mongodb://localhost/UserManager";
@@ -90,13 +87,6 @@ app.get('/deleteUser/:userID', (req, res) => {
 app.get('/search', (req, res) => {
     res.render('search');
 });
-
-// app.post('/searchPage', (req, res) => {
-//     User
-//         .find({ firstName: req.params.firstName, lastName: req.params.lastName }, function (err, something) {
-//             res.render('user', { whatever: something });
-//         });
-// })
 
 app.post('/searchPage', (req, res) => {
 
